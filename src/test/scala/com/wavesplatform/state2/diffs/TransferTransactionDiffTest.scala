@@ -29,14 +29,14 @@ class TransferTransactionDiffTest extends PropSpec
 
   property("transfers assets to recipient preserving waves invariant") {
     forAll(preconditionsAndTransfer) { case ((genesis, issue1, issue2, transfer)) =>
-      assertDiffAndState(Seq(TestBlock.create(Seq(genesis, issue1, issue2))), TestBlock.create(Seq(transfer))) { case (totalDiff, newState) =>
-        val totalPortfolioDiff = Monoid.combineAll(totalDiff.txsDiff.portfolios.values)
+      assertDiffAndState(Seq(TestBlock.create(Seq(genesis, issue1, issue2))), TestBlock.create(Seq(transfer))) { case (totalDiff, _) =>
+        val totalPortfolioDiff = Monoid.combineAll(totalDiff.portfolios.values)
         totalPortfolioDiff.balance shouldBe 0
         totalPortfolioDiff.effectiveBalance shouldBe 0
         totalPortfolioDiff.assets.values.foreach(_ shouldBe 0)
 
         val recipient: Address = transfer.recipient.asInstanceOf[Address]
-        val recipientPortfolio = newState.accountPortfolio(recipient)
+        val recipientPortfolio: Portfolio = ??? //newState.accountPortfolio(recipient)
         if (transfer.sender.toAddress != recipient) {
           transfer.assetId match {
             case Some(aid) => recipientPortfolio shouldBe Portfolio(0, LeaseInfo.empty, Map(aid -> transfer.amount))

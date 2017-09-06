@@ -6,16 +6,16 @@ import scorex.account.Address
 
 import scala.collection.SortedMap
 
+@deprecated("", "")
 case class BlockDiff(txsDiff: Diff,
-                     heightDiff: Int,
-                     snapshots: Map[Address, SortedMap[Int, Snapshot]]){
+                     heightDiff: Int) {
   override def toString: String = s"(Δh=$heightDiff, Δtxs=${txsDiff.transactions.size})"
 
 }
 
 object BlockDiff {
 
-  val empty: BlockDiff = BlockDiff(Monoid[Diff].empty, 0, Map.empty)
+  val empty: BlockDiff = BlockDiff(Monoid[Diff].empty, 0)
 
   implicit def sortedMapForSnapshotsMonoid[A: Ordering, S]: Monoid[SortedMap[A, S]] = new Monoid[SortedMap[A, S]] {
     def empty: SortedMap[A, S] = SortedMap.empty[A, S]
@@ -28,8 +28,7 @@ object BlockDiff {
 
     override def combine(older: BlockDiff, newer: BlockDiff): BlockDiff = BlockDiff(
       txsDiff = older.txsDiff.combine(newer.txsDiff),
-      heightDiff = older.heightDiff + newer.heightDiff,
-      snapshots = older.snapshots.combine(newer.snapshots))
+      heightDiff = older.heightDiff + newer.heightDiff)
   }
 
 }
