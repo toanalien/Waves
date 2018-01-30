@@ -2,6 +2,8 @@ import com.typesafe.sbt.packager.archetypes.TemplateWriter
 import sbt.Keys._
 import sbt._
 
+fork in run := true
+
 enablePlugins(JavaServerAppPackaging, JDebPackaging, SystemdPlugin, GitVersioning)
 
 inThisBuild(Seq(
